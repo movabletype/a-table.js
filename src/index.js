@@ -539,7 +539,21 @@ export default class aTable extends aTemplate {
     if (typeof window.getSelection !== 'undefined'
       && typeof document.createRange !== 'undefined') {
       const range = document.createRange();
-      range.selectNodeContents(elem);
+      if (aTable.getBrowser() === 'firefox' && elem.hasChildNodes() && elem.lastChild.tagName === 'BR') {
+        range.setEndBefore(elem.lastChild);
+      } else if (aTable.getBrowser() === 'ie11'
+        && elem.hasChildNodes() && elem.lastChild.tagName === 'P'
+        && elem.lastChild.hasChildNodes() && elem.lastChild.lastChild.tagName === 'BR')
+      {
+        range.setEndBefore(elem.lastChild.lastChild);
+      } else if (aTable.getBrowser() === 'edge'
+        && elem.hasChildNodes() && elem.lastChild.tagName === 'DIV'
+        && elem.lastChild.hasChildNodes() && elem.lastChild.lastChild.tagName === 'BR')
+      {
+        range.setEndBefore(elem.lastChild.lastChild);
+      } else {
+        range.selectNodeContents(elem);
+      }
       range.collapse(false);
       const sel = window.getSelection();
       sel.removeAllRanges();
@@ -649,7 +663,9 @@ export default class aTable extends aTemplate {
     data.mode = 'col';
     data.selectedColNo = -1;
     data.selectedRowNo = i;
-    this.contextmenu();
+    if (data.increaseDecreaseRows) {
+      this.contextmenu();
+    }
     this.update();
   }
 
@@ -674,7 +690,9 @@ export default class aTable extends aTemplate {
     data.mode = 'row';
     data.selectedRowNo = -1;
     data.selectedColNo = i;
-    this.contextmenu();
+    if (data.increaseDecreaseColumns) {
+      this.contextmenu();
+    }
     this.update();
   }
 
@@ -701,6 +719,9 @@ export default class aTable extends aTemplate {
     });
     data.history.push(clone(data.row));
     this.update();
+    if (this.afterAction) {
+      this.afterAction();
+    }
   }
 
   removeRow(selectedno) {
@@ -1112,6 +1133,9 @@ export default class aTable extends aTemplate {
     });
     data.history.push(clone(data.row));
     this.update();
+    if (this.afterAction) {
+      this.afterAction();
+    }
   }
 
   insertColLeft(selectedno) {
@@ -1137,6 +1161,9 @@ export default class aTable extends aTemplate {
       }
       data.history.push(clone(data.row));
       self.update();
+      if (this.afterAction) {
+        this.afterAction();
+      }
       return;
     }
     targetPoints.forEach((point) => {
@@ -1154,6 +1181,9 @@ export default class aTable extends aTemplate {
     });
     data.history.push(clone(data.row));
     this.update();
+    if (this.afterAction) {
+      this.afterAction();
+    }
   }
 
   beforeUpdated() {
@@ -1286,6 +1316,9 @@ export default class aTable extends aTemplate {
     data.showMenu = false;
     data.history.push(clone(data.row));
     this.update();
+    if (this.afterAction) {
+      this.afterAction();
+    }
   }
 
   splitCell() {
@@ -1367,6 +1400,9 @@ export default class aTable extends aTemplate {
     data.history.push(clone(data.row));
     data.splited = true;
     this.update();
+    if (this.afterAction) {
+      this.afterAction();
+    }
   }
 
   changeCellTypeTo(type) {
@@ -1381,6 +1417,9 @@ export default class aTable extends aTemplate {
     data.showMenu = false;
     data.history.push(clone(data.row));
     this.update();
+    if (this.afterAction) {
+      this.afterAction();
+    }
   }
 
   align(align) {
@@ -1395,6 +1434,9 @@ export default class aTable extends aTemplate {
     data.showMenu = false;
     data.history.push(clone(data.row));
     this.update();
+    if (this.afterAction) {
+      this.afterAction();
+    }
   }
 
   getStyleByAlign(val) {
@@ -1457,6 +1499,9 @@ export default class aTable extends aTemplate {
     });
     data.history.push(clone(data.row));
     this.update();
+    if (this.afterAction) {
+      this.afterAction();
+    }
   }
 
   changeSelectOption() {
