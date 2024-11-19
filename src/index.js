@@ -777,6 +777,9 @@ export default class aTable extends aTemplate {
     }
     data.history.push(clone(data.row));
     this.update();
+    if (this.afterAction) {
+      this.afterAction();
+    }
   }
 
   updateTable(b, a) {
@@ -1215,6 +1218,9 @@ export default class aTable extends aTemplate {
       }
       self.insertRow(selectedno + 1, newRow);
       self.update();
+      if (this.afterAction) {
+        this.afterAction();
+      }
       return;
     }
     targetPoints.forEach((point) => {
@@ -1241,6 +1247,9 @@ export default class aTable extends aTemplate {
     this.insertRow(selectedno + 1, newRow);
     data.history.push(clone(data.row));
     this.update();
+    if (this.afterAction) {
+      this.afterAction();
+    }
   }
 
   insertRowAbove(selectedno) {
@@ -1267,6 +1276,9 @@ export default class aTable extends aTemplate {
       }
       self.insertRow(0, newRow);
       self.update();
+      if (this.afterAction) {
+        this.afterAction();
+      }
       return;
     }
     targetPoints.forEach((point) => {
@@ -1293,6 +1305,9 @@ export default class aTable extends aTemplate {
     this.insertRow(selectedno, newRow);
     data.history.push(clone(this.data.row));
     this.update();
+    if (this.afterAction) {
+      this.afterAction();
+    }
   }
 
   mergeCells() {
